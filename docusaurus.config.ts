@@ -1,6 +1,8 @@
 import { themes as prismThemes } from "prism-react-renderer";
 import type { Config } from "@docusaurus/types";
 import type * as Preset from "@docusaurus/preset-classic";
+const fs = require("fs");
+const path = require("path");
 
 // This runs in Node.js - Don't use client-side code here (browser APIs, JSX...)
 
@@ -143,6 +145,19 @@ const config: Config = {
       darkTheme: prismThemes.dracula,
     },
   } satisfies Preset.ThemeConfig,
+  plugins: [
+    async function copyReadmePlugin() {
+      return {
+        name: "copy-gh-pages-readme",
+        async postBuild() {
+          fs.copyFileSync(
+            path.resolve(__dirname, "scripts/readme.gh-pages.md"),
+            path.resolve(__dirname, "build/README.md")
+          );
+        },
+      };
+    },
+  ],
 };
 
 export default config;
